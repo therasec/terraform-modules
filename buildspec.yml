@@ -11,7 +11,8 @@ phases:
       - echo "Installing Terraform"
       - echo $TERRAFORM_VERSION
       - curl -o terraform.zip https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip && unzip terraform.zip
-      - ls -al
+      - mv terraform /usr/local/bin
+      - alias python=python3 && pip=pip3
       - pip --version
       - python --version
       - pip install terrascan
