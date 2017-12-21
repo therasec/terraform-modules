@@ -19,8 +19,8 @@ phases:
       - pip3 install terrascan
   pre_build:
     commands:
-      - ./terraform fmt $MODULE_PATH
+      - terraform fmt $MODULE_PATH
   build:
     commands:
       - cd $MODULE_PATH
-      - ./terraform init
+      - terraform init
