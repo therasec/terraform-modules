@@ -10,7 +10,6 @@ phases:
     commands:
       - echo "Installing Terraform"
       - echo $TERRAFORM_VERSION
-      - apt-get install curl
       - curl -o terraform.zip https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip && unzip terraform.zip
       - ls -al
       - pip --version
