@@ -22,3 +22,13 @@ phases:
       - terraform fmt $MODULE_PATH
       - echo "Running terrascan"
       - terrascan -l $MODULE_PATH -t security_group
+      - echo "Running tests"
+      - cd $MODULE_PATH/tests
+      - terraform init -input=false
+      - terraform plan -out=tfplan -input=false
+      - terraform apply -input=false tfplan
+  post_build:
+    commands:
+      - pwd
+      - terraform destroy -force
+      - cd $MODULE_PATH/tests && terraform destroy -force
