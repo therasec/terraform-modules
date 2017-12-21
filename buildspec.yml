@@ -1,0 +1,16 @@
+version: 0.2
+
+env:
+  variables:
+    TERRAFORM_VERSION: "0.11.1"
+    MODULE_PATH: "tf_security_groups/sg_ssh"
+
+phases:
+  install:
+    commands:
+      - echo "Installing Terraform"
+      - curl -o terraform.zip https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/terraform_$TERRAFORM_VERSION_linux_amd64.zip && unzip terraform.zip
+      - ls -al
+  build:
+    commands:
+      - ./terraform fmt $MODULE_PATH
