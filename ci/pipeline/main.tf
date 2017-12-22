@@ -1,3 +1,9 @@
+provider aws {
+  profile = "${var.provider_profile}"
+  region  = "us-east-1"
+}
+
+
 resource "aws_codebuild_project" "fmt" {
   name         = "${var.name}-terraform-fmt"
   description  = "Checks if ${var.name}'s terraform code is formatted"

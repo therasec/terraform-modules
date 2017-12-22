@@ -1,3 +1,7 @@
+variable "provider_profile" {
+  description = "AWS credentials profile"
+}
+
 variable "name" {
   description = "This name will be appended to all pipeline resources"
 }
@@ -18,16 +22,4 @@ variable "github_repo_branch" {
 variable "code_build_image" {
   description = "Docker image to use for CodeBuild container - Use http://amzn.to/2mjCI91 for reference"
   default = "aws/codebuild/ubuntu-base:14.04"
-}
-
-variable "builder_vpc" {
-  description = "VPC ID that AMI Builder will use to launch temporary resource"
-}
-
-variable "builder_public_subnet" {
-  description = "Public Subnet ID that AMI Builder will use to launch temporary resource"
-}
-
-variable "notification_email_address" {
-  description = "Email to receive new AMI ID created by AMI Builder"
 }
