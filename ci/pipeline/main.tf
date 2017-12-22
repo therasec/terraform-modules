@@ -3,11 +3,11 @@ provider aws {
   region  = "us-east-1"
 }
 
-
 resource "aws_codebuild_project" "fmt" {
-  name         = "${var.name}-terraform-fmt"
-  description  = "Checks if ${var.name}'s terraform code is formatted"
+  name          = "${var.name}-terraform-fmt"
+  description   = "Checks if ${var.name}'s terraform code is formatted"
   build_timeout = "5"
+
   # FIXME
   # service_role = "${aws_iam_role.codebuild_role.arn}"
   service_role = "arn:aws:iam::445730574438:role/codebuild-terraform-modules"
@@ -33,14 +33,14 @@ resource "aws_codebuild_project" "fmt" {
   }
 
   source {
-    type     = "CODEPIPELINE"
+    type      = "CODEPIPELINE"
     buildspec = "ci/buildspec-terraform-fmt.yml"
   }
 }
 
-
 resource "aws_codepipeline" "pipeline" {
-  name     = "${var.name}-terraform-pipeline"
+  name = "${var.name}-terraform-pipeline"
+
   # FIXME
   # role_arn = "${aws_iam_role.codepipeline_execution_role.arn}"
   role_arn = "arn:aws:iam::445730574438:role/managed/AMI-Builder-Blogpost-PipelineExecutionRole-KWXEH5ZNKNAV"
@@ -49,7 +49,8 @@ resource "aws_codepipeline" "pipeline" {
     # FIXME
     # location = "${aws_s3_bucket.build_artifacts.bucket}"
     location = "terraform-modules-artifacts"
-    type     = "S3"
+
+    type = "S3"
   }
 
   stage {
@@ -62,12 +63,12 @@ resource "aws_codepipeline" "pipeline" {
       provider         = "GitHub"
       version          = "1"
       output_artifacts = ["source_zip"]
-      run_order = 1
+      run_order        = 1
 
       configuration {
-        Owner      = "${var.github_repo_owner}"
-        Repo       = "${var.github_repo_name}"
-        Branch     = "${var.github_branch}"
+        Owner  = "${var.github_repo_owner}"
+        Repo   = "${var.github_repo_name}"
+        Branch = "${var.github_branch}"
       }
     }
   }
@@ -76,13 +77,13 @@ resource "aws_codepipeline" "pipeline" {
     name = "terraform fmt"
 
     action {
-      name            = "fmt"
-      category        = "Test"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      input_artifacts = ["source_zip"]
+      name             = "fmt"
+      category         = "Test"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_zip"]
       output_artifacts = ["built_zip"]
-      version         = "1"
+      version          = "1"
 
       configuration {
         ProjectName = "${aws_codebuild_project.fmt.name}"

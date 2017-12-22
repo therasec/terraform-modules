@@ -16,10 +16,10 @@ variable "github_repo_name" {
 
 variable "github_repo_branch" {
   description = "Branch that pipeline will apply to"
-  default = "master"
+  default     = "master"
 }
 
 variable "code_build_image" {
   description = "Docker image to use for CodeBuild container - Use http://amzn.to/2mjCI91 for reference"
-  default = "aws/codebuild/ubuntu-base:14.04"
+  default     = "aws/codebuild/ubuntu-base:14.04"
 }
