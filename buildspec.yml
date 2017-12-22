@@ -29,6 +29,4 @@ phases:
       - terraform apply -input=false tfplan
   post_build:
     commands:
-      - pwd
       - terraform destroy -force
-      - cd $MODULE_PATH/tests && terraform destroy -force
