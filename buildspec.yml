@@ -32,8 +32,8 @@ phases:
       - terraform plan -destroy -out=tfplan -input=false -no-color
       - terraform destroy -force -no-color
   artifacts:
-  files:
-    - terrascan.log
-    - $MODULE_PATH/tests/plan.log
-    - $MODULE_PATH/tests/apply.log
-  discard-paths: yes
+    files:
+      - terrascan.log
+      - $MODULE_PATH/tests/plan.log
+      - $MODULE_PATH/tests/apply.log
+    discard-paths: yes
