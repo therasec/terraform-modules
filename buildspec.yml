@@ -29,5 +29,5 @@ phases:
       - terraform apply -input=false -no-color tfplan
   post_build:
     commands:
-      - - terraform plan -destroy -out=tfplan -input=false -no-color
+      - terraform plan -destroy -out=tfplan -input=false -no-color
       - terraform destroy -force
