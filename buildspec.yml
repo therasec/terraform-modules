@@ -12,16 +12,16 @@ phases:
       - echo $TERRAFORM_VERSION
       - curl -o terraform.zip https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip && unzip terraform.zip
       - mv terraform /usr/local/bin
-      - apt-get update
-      - apt-get -y install python3 python3-pip
-      - pip3 install terrascan
+      - apt-get -qq update
+      - apt-get -qq install python3 python3-pip
+      - pip3 install terrascan -q
       - echo "Validating terraform and terrascan installs" && terraform -v && terrascan -h
   build:
     commands:
       - echo "Testing terraform format"
       - terraform fmt $MODULE_PATH
       - echo "Running terrascan"
-      - terrascan -l $MODULE_PATH -t security_group > tee terrascan.log
+      - terrascan -l $MODULE_PATH -t security_group >> terrascan.log
       - echo "Running tests"
       - cd $MODULE_PATH/tests
       - terraform init -input=false -no-color
