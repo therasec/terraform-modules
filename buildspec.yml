@@ -21,13 +21,19 @@ phases:
       - echo "Testing terraform format"
       - terraform fmt $MODULE_PATH
       - echo "Running terrascan"
-      - terrascan -l $MODULE_PATH -t security_group
+      - terrascan -l $MODULE_PATH -t security_group | tee terrascan.log
       - echo "Running tests"
       - cd $MODULE_PATH/tests
       - terraform init -input=false -no-color
-      - terraform plan -out=tfplan -input=false -no-color
-      - terraform apply -input=false -no-color tfplan
+      - terraform plan -out=tfplan -input=false -no-color | tee plan.log
+      - terraform apply -input=false -no-color tfplan | tee apply.log
   post_build:
     commands:
       - terraform plan -destroy -out=tfplan -input=false -no-color
-      - terraform destroy -force
+      - terraform destroy -force -no-color
+  artifacts:
+  files:
+    - terrascan.log
+    - $MODULE_PATH/tests/plan.log
+    - $MODULE_PATH/tests/apply.log
+  discard-paths: yes
