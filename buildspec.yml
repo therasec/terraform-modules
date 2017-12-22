@@ -21,7 +21,7 @@ phases:
       - echo "Testing terraform format"
       - terraform fmt $MODULE_PATH
       - echo "Running terrascan"
-      - terrascan -l $MODULE_PATH -t security_group | tee terrascan.log
+      - terrascan -l $MODULE_PATH -t security_group > tee terrascan.log
       - echo "Running tests"
       - cd $MODULE_PATH/tests
       - terraform init -input=false -no-color
