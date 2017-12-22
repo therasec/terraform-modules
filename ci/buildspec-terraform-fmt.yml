@@ -1,0 +1,39 @@
+version: 0.2
+
+env:
+  variables:
+    TERRAFORM_VERSION: "0.11.1"
+    #MODULE_PATH: "tf_security_groups/sg_ssh"
+
+phases:
+  install:
+    commands:
+      - echo "Installing Terraform"
+      - echo $TERRAFORM_VERSION
+      - curl -o terraform.zip https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip && unzip terraform.zip
+      - mv terraform /usr/local/bin
+      #- apt-get -qq update
+      #- apt-get -qq install python3 python3-pip
+      #- pip3 install terrascan -q
+      #- echo "Validating terraform and terrascan installs" && terraform -v && terrascan -h
+  build:
+    commands:
+      - echo "Testing terraform format"
+      - terraform fmt $MODULE_PATH
+#      - echo "Running terrascan"
+#      - terrascan -l $MODULE_PATH -t security_group 2>&1 | tee terrascan.log
+#      - echo "Running tests"
+#      - cd $MODULE_PATH/tests
+#      - terraform init -input=false -no-color
+#      - terraform plan -out=tfplan -input=false -no-color | tee plan.log
+#      - terraform apply -input=false -no-color tfplan | tee apply.log
+#   post_build:
+#     commands:
+#       - terraform plan -destroy -out=tfplan -input=false -no-color
+#       - terraform destroy -force -no-color
+# artifacts:
+#   files:
+#     - terrascan.log
+#     - $MODULE_PATH/tests/plan.log
+#     - $MODULE_PATH/tests/apply.log
+#   discard-paths: yes
