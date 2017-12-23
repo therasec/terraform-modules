@@ -12,7 +12,7 @@ phases:
       #- if [ $format_status -gt 0 ]; then echo "Failed. Templates are not formatted. Please run 'terraform fmt'" && exit 1; else echo "Success! Templates are formatted."; fi
   post_build:
     commands:
-      - if [ -s terraform-fmt-result.txt ]; echo "Failed. Templates are not formatted. Please run 'terraform fmt'" && exit 1; else echo "Success! Templates are formatted."; fi
+      - if [ -s terraform-fmt-result.txt ]; then echo "Failed. Templates are not formatted. Please run 'terraform fmt'" && exit 1; else echo "Success! Templates are formatted."; fi
 artifacts:
   files:
     - terraform-fmt-result.txt
