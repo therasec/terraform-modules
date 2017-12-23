@@ -1,6 +1,6 @@
 provider aws {
   # profile = "therasec-prod"
-  region  = "us-east-1"
+  region = "us-east-1"
 }
 
 module "sg" {
