@@ -1,13 +1,9 @@
 version: 0.2
 
-env:
-  variables:
-    TERRAFORM_VERSION: "0.11.1"
 phases:
   install:
     commands:
-      - echo "Installing Terraform $$TERRAFORM_VERSION"
-      - curl -o terraform.zip https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip && unzip terraform.zip
+      - curl -o terraform.zip $TERRAFORM_DOWNLOAD_URL && unzip terraform.zip
       - mv terraform /usr/local/bin
   build:
     commands:

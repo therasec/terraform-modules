@@ -20,6 +20,11 @@ resource "aws_codebuild_project" "fmt" {
     type         = "LINUX_CONTAINER"
 
     environment_variable {
+      "name"  = "TERRAFORM_DOWNLOAD_URL"
+      "value" = "${var.terraform_download_url}"
+    }
+
+    environment_variable {
       "name"  = "TF_IN_AUTOMATION"
       "value" = "True"
     }
