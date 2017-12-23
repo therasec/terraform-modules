@@ -8,9 +8,7 @@ resource "aws_codebuild_project" "fmt" {
   description   = "Checks if ${var.name}'s terraform code is formatted"
   build_timeout = "5"
 
-  # FIXME
-  # service_role = "${aws_iam_role.codebuild_role.arn}"
-  service_role = "arn:aws:iam::445730574438:role/codebuild-terraform-modules"
+  service_role = "${aws_iam_role.codebuild_role.arn}"
 
   artifacts {
     type = "CODEPIPELINE"
@@ -57,7 +55,7 @@ resource "aws_codepipeline" "pipeline" {
     name = "Source"
 
     action {
-      name             = "Terraform modules repo"
+      name             = "modules-repo"
       category         = "Source"
       owner            = "ThirdParty"
       provider         = "GitHub"
@@ -68,16 +66,16 @@ resource "aws_codepipeline" "pipeline" {
       configuration {
         Owner  = "${var.github_repo_owner}"
         Repo   = "${var.github_repo_name}"
-        Branch = "${var.github_branch}"
+        Branch = "${var.github_repo_branch}"
       }
     }
   }
 
   stage {
-    name = "terraform fmt"
+    name = "terraform-fmt"
 
     action {
-      name             = "fmt"
+      name             = "terraform-fmt"
       category         = "Test"
       owner            = "AWS"
       provider         = "CodeBuild"
