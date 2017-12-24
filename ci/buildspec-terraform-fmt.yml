@@ -8,11 +8,7 @@ phases:
   build:
     commands:
       - terraform fmt $MODULE_PATH | tee terraform-fmt-result.txt
-      - test -s terraform-fmt-result.txt || exit 1
-#  post_build:
-#    commands:
-#      - touch terraform-fmt-result.txt
-#      - if [ -s terraform-fmt-result.txt ]; then echo "Failed. Templates are not formatted. Please run 'terraform fmt'" && exit 1; else echo "Success! Templates are formatted."; fi
+      - ! test -s terraform-fmt-result.txt || exit 1
 artifacts:
   files:
     - terraform-fmt-result.txt
