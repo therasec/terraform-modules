@@ -8,7 +8,7 @@ phases:
   build:
     commands:
       - terraform fmt $MODULE_PATH | tee terraform-fmt-result.txt
-      - ! test -s terraform-fmt-result.txt || exit 1
+      - if [ -s terraform-fmt-result.txt ]; then exit 1; fi
 artifacts:
   files:
     - terraform-fmt-result.txt
