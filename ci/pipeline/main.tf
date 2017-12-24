@@ -41,6 +41,39 @@ resource "aws_codebuild_project" "fmt" {
   }
 }
 
+resource "aws_codebuild_project" "terrascan" {
+  name          = "${var.name}-terrascan"
+  description   = "Runs terrascan against ${var.name}"
+  build_timeout = "5"
+
+  service_role = "${aws_iam_role.codebuild_role.arn}"
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image        = "${var.code_build_image}"
+    type         = "LINUX_CONTAINER"
+
+    environment_variable {
+      "name"  = "TERRAFORM_DOWNLOAD_URL"
+      "value" = "${var.terraform_download_url}"
+    }
+
+    environment_variable {
+      "name"  = "MODULE_PATH"
+      "value" = "tf_security_groups/sg_ssh"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = "ci/buildspec-terrascan.yml"
+  }
+}
+
 resource "aws_codepipeline" "pipeline" {
   name = "${var.name}-terraform-pipeline"
 
@@ -77,7 +110,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   stage {
-    name = "terraform-fmt"
+    name = "Test"
 
     action {
       name             = "terraform-fmt"
@@ -85,11 +118,25 @@ resource "aws_codepipeline" "pipeline" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_zip"]
-      output_artifacts = ["built_zip"]
+      output_artifacts = ["terraform_fmt"]
       version          = "1"
 
       configuration {
         ProjectName = "${aws_codebuild_project.fmt.name}"
+      }
+    }
+
+    action {
+      name             = "terrascan"
+      category         = "Test"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_zip"]
+      output_artifacts = ["terrascan"]
+      version          = "1"
+
+      configuration {
+        ProjectName = "${aws_codebuild_project.terrascan.name}"
       }
     }
   }
