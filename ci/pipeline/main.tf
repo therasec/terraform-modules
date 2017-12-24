@@ -3,7 +3,7 @@ provider aws {
   region  = "us-east-1"
 }
 
-resource "aws_codebuild_project" "fmt" {
+resource "aws_codebuild_project" "tffmt" {
   name          = "${var.name}-terraform-fmt"
   description   = "Checks if ${var.name}'s terraform code is formatted"
   build_timeout = "5"
@@ -74,6 +74,39 @@ resource "aws_codebuild_project" "terrascan" {
   }
 }
 
+resource "aws_codebuild_project" "tfplan" {
+  name          = "${var.name}-terraform-plan"
+  description   = "Runs terraform plan for ${var.name}"
+  build_timeout = "10"
+
+  service_role = "${aws_iam_role.codebuild_role.arn}"
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image        = "${var.code_build_image}"
+    type         = "LINUX_CONTAINER"
+
+    environment_variable {
+      "name"  = "TERRAFORM_DOWNLOAD_URL"
+      "value" = "${var.terraform_download_url}"
+    }
+
+    environment_variable {
+      "name"  = "MODULE_PATH"
+      "value" = "tf_security_groups/sg_ssh"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = "ci/buildspec-terraform-plan.yml"
+  }
+}
+
 resource "aws_codepipeline" "pipeline" {
   name = "${var.name}-terraform-pipeline"
 
@@ -99,7 +132,6 @@ resource "aws_codepipeline" "pipeline" {
       provider         = "GitHub"
       version          = "1"
       output_artifacts = ["source_zip"]
-      run_order        = 1
 
       configuration {
         Owner  = "${var.github_repo_owner}"
@@ -122,7 +154,7 @@ resource "aws_codepipeline" "pipeline" {
       version          = "1"
 
       configuration {
-        ProjectName = "${aws_codebuild_project.fmt.name}"
+        ProjectName = "${aws_codebuild_project.tffmt.name}"
       }
     }
 
@@ -137,6 +169,24 @@ resource "aws_codepipeline" "pipeline" {
 
       configuration {
         ProjectName = "${aws_codebuild_project.terrascan.name}"
+      }
+    }
+  }
+
+  stage {
+    name = "Build"
+
+    action {
+      name             = "terraform-plan"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_zip"]
+      output_artifacts = ["terraform_plan"]
+      version          = "1"
+
+      configuration {
+        ProjectName = "${aws_codebuild_project.tfplan.name}"
       }
     }
   }
