@@ -107,6 +107,34 @@ resource "aws_codebuild_project" "tfplan" {
   }
 }
 
+resource "aws_codebuild_project" "tfapply" {
+  name          = "${var.name}-terraform-apply"
+  description   = "Runs terraform apply for ${var.name}"
+  build_timeout = "10"
+
+  service_role = "${aws_iam_role.codebuild_role.arn}"
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image        = "${var.code_build_image}"
+    type         = "LINUX_CONTAINER"
+
+    environment_variable {
+      "name"  = "TERRAFORM_DOWNLOAD_URL"
+      "value" = "${var.terraform_download_url}"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = "ci/buildspec-terraform-apply.yml"
+  }
+}
+
 resource "aws_codepipeline" "pipeline" {
   name = "${var.name}-terraform-pipeline"
 
@@ -187,6 +215,24 @@ resource "aws_codepipeline" "pipeline" {
 
       configuration {
         ProjectName = "${aws_codebuild_project.tfplan.name}"
+      }
+    }
+  }
+
+  stage {
+    name = "Provision"
+
+    action {
+      name             = "terraform-apply"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["terraform_plan"]
+      output_artifacts = ["terraform_apply"]
+      version          = "1"
+
+      configuration {
+        ProjectName = "${aws_codebuild_project.tfapply.name}"
       }
     }
   }

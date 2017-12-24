@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - curl -o terraform.zip ${TERRAFORM_DOWNLOAD_URL} && unzip terraform.zip
+      - mv terraform /usr/local/bin
+  build:
+    commands:
+      - terraform apply -input=false -no-color tfplan | tee apply.log
+artifacts:
+  files:
+    - apply.log
+  discard-paths: yes
