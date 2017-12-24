@@ -13,4 +13,5 @@ phases:
 artifacts:
   files:
     - $MODULE_PATH/tests/plan.log
+    - $MODULE_PATH/tests/tfplan
   discard-paths: yes
