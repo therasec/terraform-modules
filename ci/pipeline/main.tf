@@ -131,7 +131,7 @@ resource "aws_codebuild_project" "tfapply" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "ci/buildspec-terraform-apply.yml"
+    buildspec = "buildspec-terraform-apply.yml"
   }
 }
 
