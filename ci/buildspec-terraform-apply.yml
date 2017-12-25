@@ -5,8 +5,11 @@ phases:
     commands:
       - curl -o terraform.zip ${TERRAFORM_DOWNLOAD_URL} && unzip terraform.zip
       - mv terraform /usr/local/bin
+      - tar -xzf terraform-plan.tgz
   build:
     commands:
+      - cd tests
+      - cat plan.log
       - terraform apply -input=false -no-color tfplan | tee apply.log
 artifacts:
   files:

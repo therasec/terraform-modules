@@ -9,10 +9,11 @@ phases:
     commands:
       - cd $MODULE_PATH/tests
       - terraform init -input=false -no-color
-      - terraform plan -out=tfplan -input=false -no-color | tee plan.log
+      - terraform plan -detailed-exitcode -out=tfplan -input=false -no-color | tee plan.log
+      - cd ../
+      - tar -czf terraform-plan.tgz tests
 artifacts:
   files:
-    - $MODULE_PATH/tests/plan.log
-    - $MODULE_PATH/tests/tfplan
+    - $MODULE_PATH/terraform-plan.tgz
     - ci/buildspec-terraform-apply.yml
   discard-paths: yes
