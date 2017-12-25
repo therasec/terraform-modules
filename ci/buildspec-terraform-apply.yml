@@ -13,5 +13,5 @@ phases:
       - terraform apply -input=false -no-color tfplan | tee apply.log
 artifacts:
   files:
-    - apply.log
+    - tests/apply.log
   discard-paths: yes
