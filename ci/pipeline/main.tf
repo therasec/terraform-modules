@@ -220,6 +220,22 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   stage {
+    name = "Approval"
+
+    action {
+      name     = "request-approval"
+      category = "Approval"
+      owner    = "AWS"
+      provider = "Manual"
+      version  = "1"
+
+      configuration {
+        NotificationArn = "${aws_sns_topic.validation.arn}"
+      }
+    }
+  }
+
+  stage {
     name = "Provision"
 
     action {
